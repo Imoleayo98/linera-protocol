@@ -1,27 +1,75 @@
-# A Social Media Example Application
+# Social Media Example Application
+This example demonstrates how to use channels for cross-chain messages in a decentralized social media application. Each microchain represents a user (its owner), enabling them to subscribe to others, share posts, and receive updates from subscribed users. The application ensures scalability, security, and flexibility while maintaining simplicity in its core functionality.
 
-This example illustrates how to use channels for cross-chain messages.
+## How It Works
+Microchains as Users
+Each microchain acts as an individual user. The state of every microchain includes:
 
-For simplicity, each microchain represents one user—its owner. They can subscribe to other
-users and make text posts that get sent to their subscribers.
+Created Posts: Text posts authored by the chain owner.
+Received Posts: Posts sent by other users the chain owner has subscribed to.
+Received posts are indexed by timestamp, sender, and a unique index for efficient retrieval.
+Core Operations
+Users can perform the following operations:
 
-## How it Works
+Subscribe/Unsubscribe: Adds or removes subscriptions to other users. These actions generate cross-chain messages sent directly to the target chain.
+Post: Creates a new post and broadcasts it through a channel to reach all subscribers.
+Posts are cryptographically signed to verify authenticity and prevent tampering.
+Cross-Chain Messaging
+Three types of cross-chain messages are used:
 
-The application's state on every microchain contains a set of posts created by this chain
-owner, and a set of posts received from other chains that it has subscribed to. The
-received posts are indexed by timestamp, sender and index.
+Subscribe Message: Sent directly to the target chain to initiate a subscription.
+Unsubscribe Message: Sent to terminate a subscription.
+Post Message: Broadcast via a channel to deliver the post to all subscribers.
+Fault-tolerant mechanisms ensure reliable message delivery, with retries for failed attempts.
+Enhanced Features
+Post Visibility Options
+Users can control the visibility of their posts:
 
-There are `Subscribe` and `Unsubscribe` operations: If a chain owner includes these in a
-new block, they can subscribe to or unsubscribe from another chain.
+Public Posts: Visible to all subscribers.
+Private Posts: Restricted to specific subscribers or groups.
+Filtering and Spam Prevention
+Subscribers can set content filters, such as keywords or maximum post frequency. Mute/block options are available for noise reduction.
 
-There is also a `Post` operation: It creates a new post and sends it to a channel, so that
-it reaches all subscribers.
+Discovery and Engagement
+To help users find others to follow:
 
-There are corresponding `Subscribe`, `Unsubscribe` and `Posts` cross-chain
-message variants that are created when these operations are handled. The first two are
-sent directly to the chain we want to subscribe to or unsubscribe from. The latter goes
-to the channel.
+A decentralized "directory" chain provides a searchable index of users.
+Profiles can include tags or categories for easier discovery.
+Rich Media Support
+Posts can include multimedia content by referencing files stored on decentralized storage solutions like IPFS.
 
+Post Interaction
+Add options for users to engage with posts through likes, comments, or reactions.
+
+Scalability and Efficiency
+Optimized Microchain Structure
+To reduce overhead, multiple users could share a single chain with unique namespaces for differentiation. This balances decentralization with resource efficiency.
+
+Efficient Indexing
+Posts are indexed by timestamp, sender, and unique ID to ensure fast retrieval, even with large datasets.
+
+Security and Authentication
+Cryptographic Signing
+All Subscribe, Unsubscribe, and Post operations are signed by the chain owner, ensuring authenticity and preventing unauthorized actions.
+
+Reliability in Cross-Chain Messaging
+Messages are queued with acknowledgments to handle network failures or delays, ensuring that every post or subscription request is reliably processed.
+
+Example Use Case
+Alice creates a post:
+Alice writes a post and broadcasts it to her subscribers via a channel.
+
+Bob subscribes to Alice:
+Bob sends a Subscribe operation to Alice’s chain. Upon confirmation, he starts receiving Alice’s posts.
+
+Bob unsubscribes from Alice:
+Bob sends an Unsubscribe operation to Alice’s chain, halting further updates. He can optionally delete Alice’s previous posts from his feed.
+
+Charlie filters content:
+Charlie, one of Alice’s subscribers, configures filters to only see posts containing specific keywords, ensuring a personalized feed.
+
+Future Potential
+This framework could be extended to support additional functionality, such as reputation scoring, group-based discussions, and decentralized governance for content moderation.
 <!--
 TODO the following documentation involves `sleep`ing to avoid some race conditions. See:
  - https://github.com/linera-io/linera-protocol/issues/1176
